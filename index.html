@@ -363,9 +363,11 @@
                 
                 items.forEach(protocol => {
                     html += `
-                        <div class="protocol-item" onclick="alert('To download: This will link to the actual PDF file when hosted on GitHub Pages')">
-                            <div class="protocol-name">${formatProtocolName(protocol)}</div>
-                        </div>
+                        <a href="${protocol}" target="_blank" style="text-decoration: none; color: inherit;">
+                            <div class="protocol-item">
+                                <div class="protocol-name">📄 ${formatProtocolName(protocol)}</div>
+                            </div>
+                        </a>
                     `;
                 });
                 

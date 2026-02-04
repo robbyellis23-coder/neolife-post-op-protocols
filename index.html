@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoLife PT - Clinical Protocols</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .search-box {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.1em;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            transition: border-color 0.3s;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .stats {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .categories {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .category {
+            margin-bottom: 40px;
+        }
+
+        .category-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .category-header:hover {
+            transform: translateY(-2px);
+        }
+
+        .category-title {
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .category-count {
+            background: rgba(255,255,255,0.3);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .protocol-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            padding: 10px;
+        }
+
+        .protocol-item {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .protocol-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .protocol-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 1.2em;
+        }
+
+        footer {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-top: 30px;
+            text-align: center;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .protocol-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏥 NeoLife Physical Therapy</h1>
+            <div class="subtitle">Clinical Protocol Library</div>
+        </header>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Search protocols (e.g., ACL, shoulder, elbow, throwing...)">
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number" id="totalProtocols">99</div>
+                <div class="stat-label">Total Protocols</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="visibleProtocols">99</div>
+                <div class="stat-label">Showing</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Categories</div>
+            </div>
+        </div>
+
+        <div class="categories" id="protocolsContainer">
+            <!-- JavaScript will populate this -->
+        </div>
+
+        <footer>
+            <p><strong>NeoLife Physical Therapy</strong> - Clinical Protocol Library</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">For internal staff use only • Last updated: February 2026</p>
+        </footer>
+    </div>
+
+    <script>
+        const protocols = {
+            "ACL / Knee": [
+                "ACL_Accelerated_with_Meniscal_Repair.pdf",
+                "ACL_Pre_Op_Guidelines.pdf",
+                "ACL_PTG_Accelerated_with_MCL_repair.pdf",
+                "ACL_Reconstruction_PTG_Accelerated_Speed.pdf",
+                "ACL_Reconstruction_PTG_Normal_Speed.pdf",
+                "ACL_Reconstruction_using_Hamstring_Tendon.pdf",
+                "ACL_SEMI.pdf",
+                "ACL_Using Contralateral Patellar Tendon.pdf",
+                "Allograft_ACL_Rehabilitation.pdf",
+                "Nonop_ACL_Injury.pdf",
+                "Nonop_MCL_Injury.pdf",
+                "Nonop_PCL_Injury.pdf"
+            ],
+            "Shoulder": [
+                "AC_Joint_Reconstruction.pdf",
+                "Adhesive_Capsulitis.pdf",
+                "Anterior_Capsular_Shift_Accelerated.pdf",
+                "Anterior_Capsular_Shift_Regular.pdf",
+                "Anterior_posterior_capsular_shift.pdf",
+                "Arthroscopic_360_degree_labral_repair.pdf",
+                "Arthroscopic_anterior_bankart.pdf",
+                "Arthroscopic_anterior_bankart_accelerated.pdf",
+                "Arthroscopic_Anterior_Plication.pdf",
+                "Arthroscopic_bankart_with_RTC_repair.pdf",
+                "Arthroscopic_Posterior_Bankart.pdf",
+                "Arthroscopic_RTC_Med_to_Large.pdf",
+                "Arthroscopic_RTC_repair_with_SLAP_II.pdf",
+                "Arthroscopic_RTC_small_to_med.pdf",
+                "Arthroscopic_SLAP_IV_biceps_tenodesis.pdf",
+                "biceps_tenodesis.pdf",
+                "Distal_Biceps_Repair.pdf",
+                "Dynamic_Stability_overhead_athlete.pdf",
+                "Fundamental_Shoulder_Exercises.pdf",
+                "Hemi_Cap_Humeral_Head_Replacement.pdf",
+                "Nonop shoulder impingement.pdf",
+                "Nonop_Internal_Impingement.pdf",
+                "Nonop_Multidirectional_Instability.pdf",
+                "Nonop_Rehab_Atraumatic_Shoulder_Instability.pdf",
+                "nonop_traumatic_anterior_instability.pdf",
+                "open_anterior_bankart.pdf",
+                "open_anterior_bankart_accelerated.pdf",
+                "open_pec_major_repair.pdf",
+                "open_posterior_bankart.pdf",
+                "open_subscap.pdf",
+                "Open_subscap_repair_with_tenodesis.pdf",
+                "postop_shoulder_exercise_program.pdf",
+                "preop_RTC_repair.pdf",
+                "Preop_SAD.pdf",
+                "proximal_bicep_tendon_repair.pdf",
+                "reverse_total_shoulder_replacement.pdf",
+                "RTC_debridement in the overhead athlete.pdf",
+                "RTC_debride_athlete.pdf",
+                "RTC_mini open Type II Med to Lrg.pdf",
+                "RTC_mini open_Type III Lrg to Massive.pdf",
+                "RTC_mini-open-1cm small to medium.pdf",
+                "RTC_partial_thick_transtendon_repair.pdf",
+                "RTC_scope_small_med in overhead athlete.pdf",
+                "RTC_traditional_open_and_mini.pdf",
+                "Scapular_dyskinesis.pdf",
+                "Scapular_Strengthening_Program.pdf",
+                "SLAP_I&III_Debridement.pdf",
+                "SLAP_II_Repair.pdf",
+                "SLAP_II_SAD.pdf",
+                "subacromial_decompression.pdf",
+                "TheramlAssistedCapsularShrinkage_SAD.pdf",
+                "ThermalAssistedCapShrink_overhead_athlete.pdf",
+                "ThermalAssistedCapsularShrinkage_MDI.pdf",
+                "ThermalAssistedCapsularShrinkage_SLAP_II.pdf",
+                "Triceps_repair.pdf",
+                "TSA_normal_speed.pdf",
+                "TSA_tissue_deficient.pdf"
+            ],
+            "Elbow": [
+                "elbow_general_arthroscopic_postop_guidelines.pdf",
+                "elbow_LCL_Reconstruction.pdf",
+                "elbow_Loose_Body_Removal.pdf",
+                "elbow_nonop_Epicondylitis.pdf",
+                "elbow_nonop_UCL_AcceleratedSpeed.pdf",
+                "elbow_nonop_UCL_NormalSpeed.pdf",
+                "elbow_olecranon_ORIF.pdf",
+                "elbow_Radial_Tunnel_Release.pdf",
+                "elbow_UCL_Preop.pdf",
+                "elbow_UCL_reconstruction_docking_technique.pdf",
+                "elbow_Ulnar_Nerve_Transposition.pdf",
+                "elbow_valgus_extension_overload_decompression.pdf",
+                "Nonoperative_Elbow_Program.pdf",
+                "UCL_Reconstruction_Gracilis_Graft.pdf",
+                "UCL_Reconstruction_Palmaris_Graft_Accelerated.pdf",
+                "UCL_Reconstruction_Palmaris_Graft_Normal_Speed.pdf"
+            ],
+            "Throwing / Interval Programs": [
+                "Golfers_Ten_Program.pdf",
+                "Interval_baseball_throwing_program_PhaseI&II.pdf",
+                "Interval_football_throwing_program.pdf",
+                "Interval_Golf_Program.pdf",
+                "Interval_hitting_program.pdf",
+                "interval_javelin_throwing_program.pdf",
+                "Interval_softball_little_league_throwing_phase_I.pdf",
+                "Interval_softball_throwing_program_phase_II.pdf",
+                "interval_throwing_10day_program_following_injection.pdf",
+                "interval_throwing_14day_program_following_injection.pdf",
+                "interval_throwing_21day_program_following_injection.pdf",
+                "Little_League_Injury_prevention_Program.pdf",
+                "Throwers_Ten_Exercise_Program.pdf"
+            ]
+        };
+
+        function formatProtocolName(filename) {
+            return filename
+                .replace('.pdf', '')
+                .replace(/_/g, ' ')
+                .replace(/([a-z])([A-Z])/g, '$1 $2');
+        }
+
+        function renderProtocols(filteredProtocols = null) {
+            const container = document.getElementById('protocolsContainer');
+            const dataToRender = filteredProtocols || protocols;
+            
+            let html = '';
+            let totalVisible = 0;
+
+            for (const [category, items] of Object.entries(dataToRender)) {
+                if (items.length === 0) continue;
+                
+                totalVisible += items.length;
+                
+                html += `
+                    <div class="category">
+                        <div class="category-header">
+                            <span class="category-title">${category}</span>
+                            <span class="category-count">${items.length} protocols</span>
+                        </div>
+                        <div class="protocol-list">
+                `;
+                
+                items.forEach(protocol => {
+                    html += `
+                        <div class="protocol-item" onclick="alert('To download: This will link to the actual PDF file when hosted on GitHub Pages')">
+                            <div class="protocol-name">${formatProtocolName(protocol)}</div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (totalVisible === 0) {
+                html = '<div class="no-results">No protocols found matching your search</div>';
+            }
+
+            container.innerHTML = html;
+            document.getElementById('visibleProtocols').textContent = totalVisible;
+        }
+
+        function searchProtocols(searchTerm) {
+            if (!searchTerm.trim()) {
+                renderProtocols();
+                return;
+            }
+
+            const filtered = {};
+            const term = searchTerm.toLowerCase();
+
+            for (const [category, items] of Object.entries(protocols)) {
+                const matchedItems = items.filter(protocol => 
+                    protocol.toLowerCase().includes(term) ||
+                    category.toLowerCase().includes(term)
+                );
+                
+                if (matchedItems.length > 0) {
+                    filtered[category] = matchedItems;
+                }
+            }
+
+            renderProtocols(filtered);
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchProtocols(e.target.value);
+        });
+
+        // Initial render
+        renderProtocols();
+    </script>
+</body>
+</html>
